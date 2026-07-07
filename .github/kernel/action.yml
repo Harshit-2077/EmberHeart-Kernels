@@ -958,6 +958,9 @@ runs:
 
         make "${MAKE_FLAGS[@]}" O="$OUT" "${CONFIGS[@]}"
 
+        # snapshot the merged .config for debugging
+        cp "$OUT/.config" "$ARTIFACTS_DIR_DEBUG/merged_config"
+
         # LOCALVERSION branding
         if [ -n "${CUSTOM_LOCALVERSION:-}" ]; then
           : > "$COMMON/.scmversion"
@@ -1002,7 +1005,12 @@ runs:
           cp "$OUT/Module.symvers" "$ARTIFACTS_DIR_DEBUG"
         fi
 
-        cp "$OUT/.config" "$ARTIFACTS_DIR_DEBUG"
+        cp "$OUT/.config" "$ARTIFACTS_DIR_DEBUG/config"
+
+        # snapshot the final defconfig for debugging
+        make "${MAKE_FLAGS[@]}" O="$OUT" savedefconfig
+        mv "$OUT/defconfig" "$ARTIFACTS_DIR_DEBUG/final_defconfig"
+
         cp "$OUT/vmlinux" "$ARTIFACTS_DIR_DEBUG"
 
         echo "::endgroup::"

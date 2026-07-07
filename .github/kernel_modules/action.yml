@@ -356,6 +356,9 @@ runs:
 
         make "${MAKE_FLAGS[@]}" O="$OUT" "${CONFIGS[@]}"
 
+        # snapshot the merged .config for debugging
+        cp "$OUT/.config" "$ARTIFACTS_DIR_DEBUG/merged_config"
+
         SECONDS=0
 
         echo "Building kernel modules and dtbs..."
@@ -492,7 +495,11 @@ runs:
         EXT_MODULES=("${EXT_OPLUS[@]#../}" "${EXT_QCOM[@]#../}") >> "$GITHUB_ENV"
 
         cp "$OUT/Module.symvers" "$ARTIFACTS_DIR_DEBUG" || true
-        cp "$OUT/.config" "$ARTIFACTS_DIR_DEBUG" || true
+        cp "$OUT/.config" "$ARTIFACTS_DIR_DEBUG/config" || true
+
+        # snapshot the final defconfig for debugging
+        make "${MAKE_FLAGS[@]}" O="$OUT" savedefconfig
+        mv "$OUT/defconfig" "$ARTIFACTS_DIR_DEBUG/final_defconfig"
 
     - name: Create dtb.img
       id: create_dtb
