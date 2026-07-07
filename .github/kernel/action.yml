@@ -1006,6 +1006,7 @@ runs:
         fi
 
         cp "$OUT/.config" "$ARTIFACTS_DIR_DEBUG/config"
+        cp "$OUT/include/config/auto.conf" "$ARTIFACTS_DIR_DEBUG/auto.conf" || true
 
         # snapshot the final defconfig for debugging
         make "${MAKE_FLAGS[@]}" O="$OUT" savedefconfig
